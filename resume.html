@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" data-theme="latex" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Résumé and experience — Aakarsh Kashyap.">
+  <meta name="color-scheme" content="light dark">
+  <title>R&eacute;sum&eacute; &amp; Experience &middot; Aakarsh Kashyap</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="latex-sketch.css">
+  <script type="module" src="vendor/wired-elements.js"></script>
+</head>
+<body>
+  <main class="paper">
+
+    <header class="masthead">
+      <h1 class="display-name" style="font-size:26px;">R&eacute;sum&eacute; &amp; Experience</h1>
+      <p class="masthead-meta">The full record PDF and the open-source contribution log.</p>
+    </header>
+
+    <section id="resume-document">
+      <h2>R&eacute;sum&eacute;</h2>
+      <hr class="latex-only">
+      <wired-divider class="sketch-only" elevation="2"></wired-divider>
+      <p>
+        For the full record, consult the
+        <a href="resume/resume.pdf"><b>R&eacute;sum&eacute;</b> (PDF)</a>.
+      </p>
+    </section>
+
+    <section id="experience">
+      <h2>Experience</h2>
+      <hr class="latex-only">
+      <wired-divider class="sketch-only" elevation="2"></wired-divider>
+      <article class="exp" data-pair>
+        <div class="latex-card">
+          <h3>Technical Contributor &middot; GigaVector (Open Source) &middot; Apr 2026 &ndash; present</h3>
+          <ul>
+            <li>Diagnosed and fixed a non-portable compile flag causing SIGILL crashes on WSL2 targets in a vector database with 500 active users; traced the failure to ABI assumptions that did not hold across toolchain configurations and submitted a patch accepted upstream.</li>
+            <li>Resolved a daemon thread lifecycle bug paired with an <code>is_running</code> liveness race that allowed silent data corruption on shutdown; required reasoning about memory visibility across thread boundaries and correct teardown ordering.</li>
+            <li>Debugged cross-platform DLL dependency failures on Windows involving libcurl linkage, MinGW runtime mismatches, and CFFI symbol resolution errors, restoring build reproducibility across Linux and Windows targets for all downstream contributors.</li>
+          </ul>
+        </div>
+        <wired-card class="sketch-card" elevation="2">
+          <h3>Technical Contributor &middot; GigaVector (Open Source) &middot; Apr 2026 &ndash; present</h3>
+          <ul>
+            <li>Diagnosed and fixed a non-portable compile flag causing SIGILL crashes on WSL2 targets in a vector database with 500 active users; traced the failure to ABI assumptions that did not hold across toolchain configurations and submitted a patch accepted upstream.</li>
+            <li>Resolved a daemon thread lifecycle bug paired with an <code>is_running</code> liveness race that allowed silent data corruption on shutdown; required reasoning about memory visibility across thread boundaries and correct teardown ordering.</li>
+            <li>Debugged cross-platform DLL dependency failures on Windows involving libcurl linkage, MinGW runtime mismatches, and CFFI symbol resolution errors, restoring build reproducibility across Linux and Windows targets for all downstream contributors.</li>
+          </ul>
+        </wired-card>
+      </article>
+    </section>
+
+  </main>
+
+  <a class="latex-chip toc-chip" id="toc-chip" href="#" title="Table of Contents">\tableofcontents</a>
+  <div id="latex-toc" class="latex-toc"></div>
+  <a class="latex-chip nav-chip" id="nav-chip" href="#" title="Site Navigation">\begin{document}</a>
+  <div id="latex-nav-popup" class="latex-nav-popup">
+    <a href="index.html">\ref{about}</a>
+    <a href="projects.html">\ref{projects}</a>
+    <a href="blog.html">\ref{blog}</a>
+    <a href="resume.html">\ref{r\'{e}sum\'{e}}</a>
+  </div>
+  <a class="latex-chip top-chip" id="top-chip" href="#" title="Back to Top">\top</a>
+  <a class="latex-chip pagecolor-chip" id="pagecolor-chip" href="#" title="Toggle Dark Mode">\pagecolor{dark}</a>
+  <a class="latex-chip theme-chip" id="theme-chip" href="#" title="Toggle Presentation Mode">\end{document}</a>
+
+  <div class="latex-taskbar">
+    <div class="taskbar-left">
+      <a href="index.html">about</a> &middot;
+      <a href="projects.html">projects</a> &middot;
+      <a href="blog.html">blog</a> &middot;
+      <a href="resume.html">r&eacute;sum&eacute;</a>
+    </div>
+    <div class="taskbar-center"><i>typeset with Vim and restraint</i></div>
+    <div class="taskbar-right"><span id="latex-clock">--:--</span></div>
+  </div>
+
+  <script src="js/theme-toggle.js"></script>
+</body>
+</html>

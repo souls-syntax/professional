@@ -1,0 +1,16 @@
+# Blog posts live here as .md files.
+# Frontmatter schema (matches fun-site ../portfolio/posts/):
+#   ---
+#   title: <string>
+#   date: <YYYY-MM-DD>
+#   tags: [<string>, ...]
+#   series: <string|null>
+#   excerpt: <string|auto>
+#   draft: <true|false>
+#   ---
+#
+# Committed .md files trigger .github/workflows/blog.yml which runs
+# .github/scripts/build-posts.js. Output: posts/<slug>.html, posts.json, feed.xml.
+#
+# Voice contract: corporate-dry. See ../SKILL.md and the `corporate-speak`
+# skill at ~/.config/opencode/skills/corporate-speak/SKILL.md.

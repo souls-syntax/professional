@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en" data-theme="latex" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Blog — Aakarsh Kashyap. Notes on systems programming, GPU compute, and compiler infrastructure.">
+  <meta name="color-scheme" content="light dark">
+  <title>Blog · Aakarsh Kashyap</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="latex-sketch.css">
+  <script type="module" src="vendor/wired-elements.js"></script>
+</head>
+<body>
+  <main class="paper">
+
+    <header class="masthead">
+      <h1 class="display-name" style="font-size:26px;">Blog</h1>
+      <p class="masthead-meta">Notes on systems programming, GPU compute, and compiler infrastructure.</p>
+    </header>
+
+    <section id="blog">
+      <h2>Entries</h2>
+      <hr class="latex-only">
+      <wired-divider class="sketch-only" elevation="2"></wired-divider>
+
+      <p>
+        <small>The blog is presently empty. Committed <code>.md</code> files in
+        <code>posts/</code> will, via the build pipeline, populate this list
+        on the next push.</small>
+      </p>
+
+      <p class="filter-pair">
+        <span class="filter-label">filter by series</span>
+        <span class="filter-row latex-only" id="series-filters-latex">
+          <input class="filter-btn-latex" type="button" data-key="all" data-by="series" value="all">
+        </span>
+        <span class="filter-row sketch-only" id="series-filters-sketch">
+          <wired-button class="filter-btn-sketch" data-key="all" data-by="series">all</wired-button>
+        </span>
+      </p>
+
+      <p class="filter-pair">
+        <span class="filter-label">filter by tag</span>
+        <span class="filter-row latex-only" id="tag-filters-latex">
+          <input class="filter-btn-latex" type="button" data-key="all" data-by="tag" value="all">
+        </span>
+        <span class="filter-row sketch-only" id="tag-filters-sketch">
+          <wired-button class="filter-btn-sketch" data-key="all" data-by="tag">all</wired-button>
+        </span>
+      </p>
+
+      <ul class="post-list" id="post-list">
+        <li><small>&mdash; no entries yet &mdash;</small></li>
+      </ul>
+    </section>
+
+  </main>
+
+  <a class="latex-chip toc-chip" id="toc-chip" href="#" title="Table of Contents">\tableofcontents</a>
+  <div id="latex-toc" class="latex-toc"></div>
+  <a class="latex-chip nav-chip" id="nav-chip" href="#" title="Site Navigation">\begin{document}</a>
+  <div id="latex-nav-popup" class="latex-nav-popup">
+    <a href="index.html">\ref{about}</a>
+    <a href="projects.html">\ref{projects}</a>
+    <a href="blog.html">\ref{blog}</a>
+    <a href="resume.html">\ref{r\'{e}sum\'{e}}</a>
+  </div>
+  <a class="latex-chip top-chip" id="top-chip" href="#" title="Back to Top">\top</a>
+  <a class="latex-chip pagecolor-chip" id="pagecolor-chip" href="#" title="Toggle Dark Mode">\pagecolor{dark}</a>
+  <a class="latex-chip theme-chip" id="theme-chip" href="#" title="Toggle Presentation Mode">\end{document}</a>
+
+  <div class="latex-taskbar">
+    <div class="taskbar-left">
+      <a href="index.html">about</a> &middot;
+      <a href="projects.html">projects</a> &middot;
+      <a href="blog.html">blog</a> &middot;
+      <a href="resume.html">r&eacute;sum&eacute;</a>
+    </div>
+    <div class="taskbar-center"><i>typeset with Vim and restraint</i></div>
+    <div class="taskbar-right"><span id="latex-clock">--:--</span></div>
+  </div>
+
+  <script src="js/theme-toggle.js"></script>
+  <script>
+  (function() {
+    var state = { tag: 'all', series: 'all' };
+
+    function filterPosts() {
+      var rows = document.querySelectorAll('.post-row');
+      for (var i = 0; i < rows.length; i++) {
+        var show = true;
+        if (state.series !== 'all') {
+          var s = rows[i].getAttribute('data-series') || '';
+          show = show && (s === state.series);
+        }
+        if (state.tag !== 'all') {
+          var tags = (rows[i].getAttribute('data-tags') || '').split(' ');
+          show = show && (tags.indexOf(state.tag) !== -1);
+        }
+        rows[i].style.display = show ? '' : 'none';
+      }
+    }
+
+    function setActive(sel) {
+      return; // placeholder; set in mount loop below using data-key
+    }
+
+    function bindFilterButtons(rootSel, btnClass) {
+      var root = document.querySelector(rootSel);
+      if (!root) return;
+      var btns = root.querySelectorAll(btnClass);
+      for (var i = 0; i < btns.length; i++) {
+        (function(btn) {
+          function activate() {
+            var key = btn.getAttribute('data-key');
+            var by = btn.getAttribute('data-by');
+            state[by] = key;
+            // visual active state — toggle on both latex and sketch siblings
+            var allBtns = document.querySelectorAll('[data-by="' + by + '"]');
+            for (var j = 0; j < allBtns.length; j++) {
+              var b = allBtns[j];
+              if (b.getAttribute('data-key') === key && b.classList.contains(btnClass)) {
+                if (b.classList) b.classList.add('active');
+              } else {
+                if (b.classList) b.classList.remove('active');
+              }
+            }
+            // mirror the active state in the sibling filter-row pair
+            var siblingBtns = document.querySelectorAll('[data-by="' + by + '"][data-key="' + key + '"]');
+            for (var k = 0; k < siblingBtns.length; k++) {
+              if (siblingBtns[k].classList.contains('filter-btn-latex') ||
+                  siblingBtns[k].classList.contains('filter-btn-sketch')) {
+                siblingBtns[k].classList.add('active');
+              }
+            }
+            filterPosts();
+          }
+          btn.addEventListener('click', activate);
+        })(btns[i]);
+      }
+    }
+
+    function buildFilters(posts) {
+      var seriesLatex = document.getElementById('series-filters-latex');
+      var seriesSketch = document.getElementById('series-filters-sketch');
+      var tagLatex = document.getElementById('tag-filters-latex');
+      var tagSketch = document.getElementById('tag-filters-sketch');
+      if (!seriesLatex || !seriesSketch || !tagLatex || !tagSketch) return;
+
+      var allSeries = [], allTags = [];
+      for (var i = 0; i < posts.length; i++) {
+        var p = posts[i];
+        if (p.series && allSeries.indexOf(p.series) === -1) allSeries.push(p.series);
+        for (var j = 0; j < p.tags.length; j++) {
+          if (allTags.indexOf(p.tags[j]) === -1) allTags.push(p.tags[j]);
+        }
+      }
+
+      function makeLatexBtn(key, by, label) {
+        var el = document.createElement('input');
+        el.setAttribute('type', 'button');
+        el.setAttribute('value', label || key);
+        el.setAttribute('data-key', key);
+        el.setAttribute('data-by', by);
+        el.className = 'filter-btn-latex' + (key === 'all' ? ' active' : '');
+        return el;
+      }
+      function makeSketchBtn(key, by, label) {
+        var el = document.createElement('wired-button');
+        el.setAttribute('data-key', key);
+        el.setAttribute('data-by', by);
+        el.className = 'filter-btn-sketch' + (key === 'all' ? ' active' : '');
+        el.textContent = label || key;
+        return el;
+      }
+
+      // reset existing filter rows (keep 'all' default button, append new ones)
+      while (seriesLatex.children.length > 1) seriesLatex.removeChild(seriesLatex.lastChild);
+      while (seriesSketch.children.length > 1) seriesSketch.removeChild(seriesSketch.lastChild);
+      while (tagLatex.children.length > 1) tagLatex.removeChild(tagLatex.lastChild);
+      while (tagSketch.children.length > 1) tagSketch.removeChild(tagSketch.lastChild);
+
+      for (var s = 0; s < allSeries.length; s++) {
+        seriesLatex.appendChild(makeLatexBtn(allSeries[s], 'series', allSeries[s]));
+        seriesSketch.appendChild(makeSketchBtn(allSeries[s], 'series', allSeries[s]));
+      }
+      for (var t = 0; t < allTags.length; t++) {
+        tagLatex.appendChild(makeLatexBtn(allTags[t], 'tag', allTags[t]));
+        tagSketch.appendChild(makeSketchBtn(allTags[t], 'tag', allTags[t]));
+      }
+
+      // bind clicks on every visible button — both default and built ones
+      bindFilterButtons('#series-filters-latex',  '.filter-btn-latex');
+      bindFilterButtons('#series-filters-sketch', '.filter-btn-sketch');
+      bindFilterButtons('#tag-filters-latex',     '.filter-btn-latex');
+      bindFilterButtons('#tag-filters-sketch',    '.filter-btn-sketch');
+
+      // bind the already-present 'all' default buttons too
+      var allBtns = document.querySelectorAll('.filter-btn-latex, .filter-btn-sketch');
+      for (var n = 0; n < allBtns.length; n++) {
+        (function(btn) {
+          if (btn.__filterBound) return;
+          btn.__filterBound = true;
+          function activate() {
+            var key = btn.getAttribute('data-key');
+            var by = btn.getAttribute('data-by');
+            state[by] = key;
+            var siblings = document.querySelectorAll('[data-by="' + by + '"]');
+            for (var j = 0; j < siblings.length; j++) {
+              siblings[j].classList.toggle('active', siblings[j].getAttribute('data-key') === key);
+            }
+            filterPosts();
+          }
+          btn.addEventListener('click', activate);
+        })(allBtns[n]);
+      }
+    }
+
+    function renderPosts(posts) {
+      var list = document.getElementById('post-list');
+      if (!list) return;
+      list.innerHTML = '';
+      if (!posts.length) {
+        list.innerHTML = '<li><small>&mdash; no entries yet &mdash;</small></li>';
+        return;
+      }
+      for (var i = 0; i < posts.length; i++) {
+        var p = posts[i];
+        var tagsHtml = p.tags.map(function(t){ return '[' + t + ']'; }).join(' ');
+        var readStr = p.readingTime ? ' &middot; ' + p.readingTime + ' min' : '';
+        var excerptHtml = p.excerpt ? '<p class="post-excerpt">' + p.excerpt + '</p>' : '';
+        var latexRow = document.createElement('li');
+        latexRow.className = 'post-row latex-card';
+        latexRow.setAttribute('data-pair', '');
+        latexRow.setAttribute('data-tags', p.tags.join(' '));
+        latexRow.setAttribute('data-series', p.series || '');
+        latexRow.innerHTML =
+          '<h3><a href="' + p.url + '">' + p.title + '</a></h3>' +
+          '<p class="post-meta">' + p.date + ' &mdash; <span class="post-tags">' + tagsHtml + '</span>' + readStr + '</p>' +
+          excerptHtml;
+        list.appendChild(latexRow);
+        var sketchRow = document.createElement('wired-card');
+        sketchRow.className = 'post-row sketch-card';
+        sketchRow.setAttribute('data-pair', '');
+        // wired-card can't easily carry data-tags because it's a custom element; mirror via attributes
+        sketchRow.setAttribute('data-tags', p.tags.join(' '));
+        sketchRow.setAttribute('data-series', p.series || '');
+        sketchRow.style.display = 'none'; // moofin CSS will flip — fallback until then
+        sketchRow.innerHTML =
+          '<h3><a href="' + p.url + '">' + p.title + '</a></h3>' +
+          '<p class="post-meta">' + p.date + ' &mdash; <span class="post-tags">' + tagsHtml + '</span>' + readStr + '</p>' +
+          (p.excerpt ? '<p class="post-excerpt">' + p.excerpt + '</p>' : '');
+        list.appendChild(sketchRow);
+      }
+    }
+
+    fetch('posts.json')
+      .then(function(r){ return r.json(); })
+      .then(function(posts){
+        buildFilters(posts);
+        renderPosts(posts);
+        filterPosts();
+        // ensure the inactive-pair elements are inert/aria-hidden on first paint
+        if (window.propagatePairs) window.propagatePairs(document.documentElement.getAttribute('data-theme'));
+      })
+      .catch(function(){});
+  })();
+  </script>
+</body>
+</html>

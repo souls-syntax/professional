@@ -1,0 +1,674 @@
+/* ═══════════════════════════════════════════════════
+   latex-sketch.css — LaTeX-academic × pencil-sketch
+   Moofin pattern: one DOM, CSS-only attribute switch.
+   <html data-theme="latex"> → raw academic paper (default)
+   <html data-theme="sketch"> → wired-elements pencil-sketch overlay
+   <html data-mode="light|dark"> → orthogonal paper/mode toggle
+   No DOM-swap on toggle — JS only flips the <html> attribute,
+   swaps the #theme-chip text, and propagates inert/aria-hidden on
+   data-pair siblings so the a11y tree follows the visual flip.
+   ═══════════════════════════════════════════════════ */
+
+/* ── sketch-theme handwriting font (Gloria Hallelujah) ──
+   Applied to all prose + headings + captions when in sketch mode.
+   Exceptions (keep Courier New in BOTH themes): .latex-chip,
+   .taskbar-right (clock), .gpg-key, .logo-caption, code, pre.
+   Chrome is constant across moofin — chips stay monospace so the
+   reader's muscle memory transfers between themes. */
+[data-theme="sketch"] body,
+[data-theme="sketch"] .masthead-meta,
+[data-theme="sketch"] .masthead-niche,
+[data-theme="sketch"] .display-name,
+[data-theme="sketch"] section > h2,
+[data-theme="sketch"] .card > h3,
+[data-theme="sketch"] article.exp > h3,
+[data-theme="sketch"] .post-row > h3,
+[data-theme="sketch"] .skill-list > li,
+[data-theme="sketch"] .skill-list > li > b,
+[data-theme="sketch"] .proj-meta,
+[data-theme="sketch"] .post-meta,
+[data-theme="sketch"] .post-excerpt,
+[data-theme="sketch"] .contact-line,
+[data-theme="sketch"] .latex-taskbar,
+[data-theme="sketch"] .taskbar-center {
+  font-family: "Gloria Hallelujah", "Crimson Text", cursive !important;
+  text-align: left;
+  hyphens: manual;
+}
+[data-theme="sketch"] body { text-align: left; hyphens: manual; }
+[data-theme="sketch"] p { text-align: left; }
+[data-theme="sketch"] .masthead-meta { text-align: left; }
+
+/* ── shared body (both themes) ── */
+body {
+  background: #fafafa !important;
+  color: #1a1a1a !important;
+  font-family: "Crimson Text", Georgia, "Times New Roman", serif !important;
+  text-align: justify;
+  line-height: 1.65;
+  hyphens: auto;
+  margin: 0;
+  scroll-behavior: smooth;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+body a,
+body a:visited {
+  color: #1a1a1a !important;
+  text-decoration: underline;
+  text-decoration-color: #aaa;
+  text-underline-offset: 2px;
+}
+body a:hover {
+  color: #000 !important;
+  text-decoration-color: #333;
+}
+
+/* ── paper column ── */
+.paper {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 80px 32px 80px;
+  box-sizing: border-box;
+}
+
+/* ── masthead ── */
+.masthead { margin-bottom: 32px; }
+.display-name {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  margin: 0 0 6px;
+  text-align: left;
+  display: inline-block;
+}
+.masthead-meta {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 4px;
+  font-style: italic;
+  text-align: left;
+}
+.masthead-niche {
+  font-variant: small-caps;
+  letter-spacing: 1px;
+  font-size: 13px;
+  color: #444;
+  margin: 0 0 12px;
+  text-align: left;
+}
+
+/* ── sections: <h2> with CSS-rule fallback under sketchy underline ── */
+section {
+  margin: 32px 0 24px;
+  padding-top: 4px;
+}
+section > h2 {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 17px;
+  font-variant: small-caps;
+  letter-spacing: 1px;
+  font-weight: 600;
+  margin: 0 0 16px;
+  text-align: left;
+  display: inline-block;
+}
+[data-theme="latex"]  section > h2 { border-bottom: 1px solid #333; padding-bottom: 6px; }
+[data-theme="sketch"] section > h2 { border-bottom: none; padding-bottom: 0; }
+
+/* wired-divider replaces the latex <hr> under section title in sketch mode */
+[data-theme="latex"]  .divider-sketch { display: none; }
+[data-theme="sketch"] .divider-latex  { display: block; }
+
+/* ── inline <b> stays as small-caps citation label ── */
+b {
+  font-variant: small-caps;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+/* ── misc typography ── */
+small { font-size: 12px; color: #666; }
+p { margin: 8px 0; }
+ul { padding-left: 20px; }
+li { margin: 4px 0; }
+hr { border: none; border-top: 1px solid #333; margin: 24px 0; }
+code, pre { font-family: "Courier New", Courier, monospace; }
+
+/* ═══════════════════════════════════════════════════
+   MOOFIN VISIBILITY MATRIX
+   ═══════════════════════════════════════════════════ */
+/* default — every paired element: latex-card visible, sketch-card hidden */
+[data-theme="latex"] .sketch-only { display: none !important; }
+[data-theme="sketch"] .latex-only { display: none !important; }
+/* paired project card containers */
+[data-theme="latex"]  .latex-card  { display: block; }
+[data-theme="sketch"] .latex-card  { display: none; }
+[data-theme="latex"]  sketch-card,
+[data-theme="latex"]  .sketch-card { display: none; }
+[data-theme="sketch"] .sketch-card { display: inline-block; }
+
+/* ═══════════════════════════════════════════════════
+   PROJECT CARD PAIRS
+   Outer <section class="project" data-pair> holds:
+     <div class="latex-card card">  — raw latex rendering
+     <wired-card class="sketch-card card"> — pencil-sketch rendering
+   Same content twice, a11y tree handled via inert on the inactive one.
+   ═══════════════════════════════════════════════════ */
+.project { margin: 24px 0; position: relative; break-inside: avoid; }
+
+/* ── the latex-card variant styling ── */
+[data-theme="latex"] .latex-card {
+  border: 1px solid #ccc;
+  padding: 14px 18px 18px;
+  box-sizing: border-box;
+}
+/* ── the sketch-card (wired-card) wrapper touches ── */
+[data-theme="sketch"] wired-card.sketch-card {
+  display: block;
+  padding: 14px 18px 18px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* shared project-card internals — visible in whichever of the pair is active */
+.card > h3 {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 16px;
+  font-variant: small-caps;
+  letter-spacing: 1px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  text-align: left;
+}
+.proj-meta {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+  margin: 0 0 8px;
+  text-align: left;
+}
+.proj-link {
+  display: inline-block;
+  margin-top: 6px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+}
+
+/* ── skill list (label-then-colon) ── */
+.skill-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 8px 0;
+}
+.skill-list > li {
+  margin: 8px 0;
+  padding-left: 0;
+  text-align: left;
+}
+.skill-list > li > b {
+  display: inline-block;
+  width: 132px;
+  font-size: 13px;
+  color: #444;
+  vertical-align: baseline;
+}
+
+/* ── experience entry ── */
+article.exp {
+  margin: 16px 0;
+  padding: 4px 0 4px 14px;
+}
+article.exp > h3 {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant: small-caps;
+  letter-spacing: 1px;
+  margin: 0;
+  text-align: left;
+}
+article.exp > ul { margin-top: 8px; }
+
+/* ── résumé / GPG blocks ── */
+.resume-link { margin-top: 8px; font-size: 15px; }
+/* gpg block: single <pre class="gpg-key placeholder">, no wrappers */
+.gpg-key {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+  background: transparent;
+  color: #1a1a1a;
+  padding: 12px 16px;
+  margin: 8px 0;
+  letter-spacing: 1px;
+  word-break: break-all;
+  text-align: left;
+  display: inline-block;
+  white-space: pre-wrap;
+}
+/* placeholder flag (dashed outline, monochrome) — visual edit-me hint */
+.placeholder { outline: 1px dashed #999; outline-offset: 4px; }
+a.placeholder { outline: 1px dashed #999; outline-offset: 4px; }
+.placeholder-note {
+  display: block;
+  font-size: 11px;
+  font-style: italic;
+  color: #999;
+  margin-top: 2px;
+}
+
+/* ── correspondence row ── */
+.logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px 32px;
+  margin: 18px 0 8px;
+  align-items: flex-start;
+}
+.logo {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 8px;
+  min-height: 36px;
+}
+.logo > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  text-decoration: none !important;
+  border: none !important;
+  color: #1a1a1a;
+}
+.logo-mark {
+  fill: currentColor;
+  stroke: none;
+  color: #1a1a1a;
+}
+.logo > a:hover .logo-mark { color: #000; }
+.logo-caption {
+  display: block;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 10px;
+  color: #999;
+  margin-top: 6px;
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+.logo.placeholder .logo-caption { color: #777; font-style: italic; }
+
+/* logos row: 5 plain <span class="logo"> with inline SVG; no per-logo wrappers in either theme.
+   The sketch feel on this row comes from the handwriting-font caption,
+   not from a hand-drawn border around each logo. */
+
+/* placeholder flag (visual edit-me hint) */
+.placeholder { outline: 1px dashed #999; outline-offset: 4px; }
+a.placeholder { outline: 1px dashed #999; outline-offset: 4px; }
+
+/* ── contact line ── */
+.contact-line {
+  font-size: 13px;
+  color: #444;
+  margin-top: 18px;
+  text-align: left;
+  font-style: italic;
+}
+.contact-line a { font-style: normal; }
+
+/* ── blog list cards ── */
+.post-list { list-style: none; padding: 0; margin: 16px 0; }
+.post-row {
+  margin: 10px 0;
+  padding: 12px 14px;
+  break-inside: avoid;
+  position: relative;
+}
+[data-theme="latex"]  .post-row.latex-card { border: 1px solid #ccc; }
+[data-theme="sketch"] wired-card.post-row.sketch-card { display: block; padding: 12px 14px; width: 100%; }
+.post-row > h3 {
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  text-align: left;
+}
+.post-row > h3 > a { text-decoration: none; }
+.post-row > h3 > a:hover { text-decoration: underline; }
+.post-meta {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+  margin: 0 0 6px;
+  text-align: left;
+}
+.post-tags { font-family: "Courier New", Courier, monospace; font-size: 12px; }
+.post-tags > a { text-decoration: none; }
+.post-excerpt { color: #555; font-size: 14px; margin-top: 4px; }
+
+/* blog filter-bar pair (latex input buttons + sketch wired-button listbox) */
+.filter-pair { margin: 14px 0; }
+.filter-pair .filter-label { display: block; font-size: 11px; color: #666; margin-bottom: 4px; font-variant: small-caps; letter-spacing: 1px; }
+.filter-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.filter-btn-latex {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  background: #f4f4f4;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  padding: 3px 10px;
+  cursor: pointer;
+  color: #555;
+}
+.filter-btn-latex:hover { background: #e8e8e8; color: #222; }
+.filter-btn-latex.active { background: #1a1a1a; color: #fafafa; border-color: #1a1a1a; }
+.filter-btn-sketch {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  padding: 3px 12px;
+  cursor: pointer;
+}
+
+/* ── chip (LaTeX-vernacular floating control) ── */
+.latex-chip {
+  position: fixed;
+  bottom: 52px;
+  right: 18px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  background: #f4f4f4;
+  border: 1px solid #bbb;
+  border-radius: 2px;
+  padding: 3px 10px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #555;
+  z-index: 9999;
+  user-select: none;
+  transition: background 0.15s, color 0.15s;
+}
+.latex-chip:hover { background: #e0e0e0; color: #222; }
+[data-mode="dark"] .latex-chip { background: #2a2a2a; border-color: #555; color: #aaa; }
+[data-mode="dark"] .latex-chip:hover { background: #3a3a3a; color: #fff; }
+
+/* ── pagecolor toggle chip (stacks at bottom-right row 1) ── */
+.pagecolor-chip { bottom: 52px; }
+
+/* ── back-to-top chip (\top) — bottom-left row 1 ── */
+.top-chip {
+  bottom: 52px;
+  left: 18px;
+  right: auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, background 0.15s, color 0.15s;
+}
+.top-chip.visible { opacity: 1; pointer-events: auto; }
+
+/* ── theme chip (\end{document} / \documentclass{article}) — THE MOOFIN TOGGLE
+   Stacks at bottom-right row 2 (above pagecolor). Left-right rhyme:
+   row 52: \top (left) | \pagecolor{dark} (right)
+   row 82: \begin{document} (left) | \end{document} (right) ── */
+.theme-chip { bottom: 82px; }
+
+/* ── nav chip (\begin{document}) — bottom-left row 2 ── */
+.nav-chip { bottom: 82px; left: 18px; right: auto; }
+
+/* ═══════════════════════════════════════════════════
+   Dark mode (pagecolor toggle) — orthogonal to theme
+   ═══════════════════════════════════════════════════ */
+[data-mode="dark"] body {
+  background: #1a1a1a !important;
+  color: #d4d4d4 !important;
+}
+[data-mode="dark"] body a,
+[data-mode="dark"] body a:visited {
+  color: #c8c8c8 !important;
+  text-decoration-color: #555;
+}
+[data-mode="dark"] body a:hover { color: #fff !important; text-decoration-color: #999; }
+[data-mode="dark"] hr { border-top-color: #444 !important; }
+[data-mode="dark"] small { color: #999; }
+[data-mode="dark"] b { color: #e8e8e8; }
+[data-mode="dark"] .masthead-meta { color: #999; }
+[data-mode="dark"] .masthead-niche { color: #bbb; }
+[data-mode="dark"] section > h2,
+[data-mode="dark"] .card > h3,
+[data-mode="dark"] article.exp > h3,
+[data-mode="dark"] .post-row > h3 { color: #e8e8e8; }
+[data-theme="latex"][data-mode="dark"]  section > h2 { border-bottom-color: #444 !important; }
+[data-mode="dark"] .proj-meta,
+[data-mode="dark"] .post-meta { color: #999; }
+[data-mode="dark"] .skill-list > li > b { color: #c8c8c8; }
+[data-mode="dark"] .post-excerpt { color: #aaa; }
+[data-mode="dark"] .contact-line { color: #bbb; }
+[data-mode="dark"] .logo > a { color: #c8c8c8; }
+[data-mode="dark"] .logo-mark, [data-mode="dark"] .logo > a .logo-mark { color: #c8c8c8; }
+[data-mode="dark"] .logo > a:hover .logo-mark { color: #fff; }
+[data-mode="dark"] .logo-caption { color: #777; }
+[data-mode="dark"] .gpg-key { color: #d4d4d4; }
+[data-mode="dark"] .placeholder, [data-mode="dark"] a.placeholder { outline-color: #555; }
+[data-mode="dark"] .placeholder-note { color: #666; }
+[data-theme="latex"][data-mode="dark"]  .latex-card { border-color: #444 !important; }
+[data-theme="latex"][data-mode="dark"]  .post-row.latex-card { border-color: #444 !important; }
+[data-theme="latex"][data-mode="dark"]  .filter-btn-latex {
+  background: #2a2a2a; border-color: #555; color: #aaa;
+}
+[data-theme="latex"][data-mode="dark"] .filter-btn-latex:hover { background: #3a3a3a; color: #fff; }
+[data-theme="latex"][data-mode="dark"] .filter-btn-latex.active {
+  background: #d4d4d4; color: #1a1a1a; border-color: #d4d4d4;
+}
+
+/* sketch-theme dark tweaks: wired-card strokes use currentColor so they auto-flip;
+   only the hachure fill should be touched if the card sets a `fill` */
+[data-theme="sketch"][data-mode="dark"] wired-card { color: #d4d4d4; }
+
+/* ═══════════════════════════════════════════════════
+   LaTeX sticky taskbar (bottom-fixed bar)
+   ═══════════════════════════════════════════════════ */
+body { padding-bottom: 44px; }
+.latex-taskbar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 36px;
+  background: #f0f0f0;
+  border-top: 1px solid #ccc;
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 13px;
+  color: #666;
+  z-index: 9998;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+[data-theme="latex"]  .latex-taskbar { display: flex; }
+[data-theme="sketch"] .latex-taskbar { display: flex; }
+[data-mode="dark"] .latex-taskbar {
+  background: #1a1a1a;
+  border-top-color: #333;
+  color: #888;
+}
+.latex-taskbar a {
+  color: #555 !important;
+  text-decoration: none !important;
+  white-space: nowrap;
+}
+.latex-taskbar a:hover { color: #000 !important; text-decoration: underline !important; }
+[data-mode="dark"] .latex-taskbar a { color: #999 !important; }
+[data-mode="dark"] .latex-taskbar a:hover { color: #fff !important; }
+.taskbar-left, .taskbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.taskbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-style: italic;
+  font-size: 12px;
+  color: #999;
+  pointer-events: none;
+}
+[data-mode="dark"] .taskbar-center { color: #666; }
+.taskbar-right {
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+}
+
+/* ═══════════════════════════════════════════════════
+   Table of contents chip + overlay
+   ═══════════════════════════════════════════════════ */
+.toc-chip { bottom: 112px; }
+.latex-toc {
+  display: none;
+  position: fixed;
+  bottom: 142px;
+  right: 18px;
+  max-width: 320px;
+  max-height: 60vh;
+  overflow-y: auto;
+  background: #fafafa;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  padding: 14px 18px;
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 13px;
+  line-height: 1.6;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  z-index: 9999;
+}
+.latex-toc.show { display: block; }
+[data-mode="dark"] .latex-toc {
+  background: #1f1f1f;
+  border-color: #444;
+  color: #ccc;
+}
+.latex-toc a {
+  display: block;
+  color: #555 !important;
+  text-decoration: none !important;
+  padding: 2px 0;
+}
+.latex-toc a:hover {
+  color: #000 !important;
+  text-decoration: underline !important;
+}
+[data-mode="dark"] .latex-toc a { color: #aaa !important; }
+[data-mode="dark"] .latex-toc a:hover { color: #fff !important; }
+.latex-toc .toc-title {
+  font-weight: 600;
+  font-variant: small-caps;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 4px;
+}
+[data-mode="dark"] .latex-toc .toc-title { border-bottom-color: #444; }
+
+/* ═══════════════════════════════════════════════════
+   Nav popover (\begin{document} chip)
+   ═══════════════════════════════════════════════════ */
+.latex-nav-popup {
+  display: none;
+  position: fixed;
+  bottom: 112px;
+  left: 18px;
+  max-width: 220px;
+  background: #fafafa;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  padding: 10px 14px;
+  font-family: "Crimson Text", Georgia, serif;
+  font-size: 13px;
+  line-height: 1.8;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  z-index: 9999;
+}
+.latex-nav-popup.show { display: block; }
+[data-mode="dark"] .latex-nav-popup {
+  background: #1f1f1f;
+  border-color: #444;
+  color: #ccc;
+}
+.latex-nav-popup a {
+  display: block;
+  color: #555 !important;
+  text-decoration: none !important;
+  padding: 2px 0;
+}
+.latex-nav-popup a:hover {
+  color: #000 !important;
+  text-decoration: underline !important;
+}
+[data-mode="dark"] .latex-nav-popup a { color: #aaa !important; }
+[data-mode="dark"] .latex-nav-popup a:hover { color: #fff !important; }
+
+/* ═══════════════════════════════════════════════════
+   Mobile responsive (≤ 600px)
+   ═══════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .latex-chip { font-size: 10px; padding: 2px 7px; }
+  /* row 1 (bottom 46): \top (left) | \pagecolor{dark} (right) */
+  .top-chip { bottom: 46px; }
+  .pagecolor-chip { bottom: 46px; }
+  /* row 2 (bottom 74): \begin{document} (left) | \end{document} (right) */
+  .nav-chip { bottom: 74px; }
+  .theme-chip { bottom: 74px; }
+  /* row 3 (bottom 102): \tableofcontents (right) */
+  .toc-chip { bottom: 102px; }
+  /* popovers clear the stack */
+  .latex-toc {
+    bottom: 130px;
+    right: 10px; left: 10px;
+    max-width: none;
+  }
+  .latex-nav-popup {
+    bottom: 102px;
+    left: 10px;
+    right: auto;
+    max-width: none;
+  }
+  .paper { padding: 48px 16px 60px; max-width: 100%; }
+  .display-name { font-size: 26px; }
+  .skill-list > li > b { display: block; width: auto; margin-bottom: 2px; }
+  .logos { gap: 18px 22px; justify-content: flex-start; }
+  .latex-taskbar { font-size: 11px; padding: 0 8px; }
+  .taskbar-center { display: none; }
+  .filter-row { gap: 4px; }
+}
+
+/* ═══════════════════════════════════════════════════
+   Print stylesheet — prints whatever's currently active
+   Chrome (chips / taskbar / TOC) hidden; paired inactive
+   theme's elements are already display:none via moofin.
+   Wired <wired-card> SVG strokes are content — they stay.
+   ═══════════════════════════════════════════════════ */
+@media print {
+  .latex-chip, .latex-toc, .latex-nav-popup, .latex-taskbar,
+  .top-chip, .toc-chip, .pagecolor-chip, .nav-chip, .theme-chip {
+    display: none !important;
+  }
+  body { padding-bottom: 0 !important; }
+  .paper { padding: 0; max-width: 100%; }
+  .placeholder, a.placeholder { outline: none; }
+  .project, article.exp, section { break-inside: avoid; page-break-inside: avoid; }
+  [data-theme="sketch"] wired-card { color: #000 !important; }
+}
+
+/* ── selection ── */
+::selection { background: rgba(0, 0, 0, 0.14); color: inherit; }
+[data-mode="dark"] ::selection { background: rgba(255, 255, 255, 0.18); color: inherit; }
+
+/* ── reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  body { scroll-behavior: auto; }
+}

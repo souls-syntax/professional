@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en" data-theme="latex" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Projects — Aakarsh Kashyap. Systems programming, GPU compute, and backend prototypes.">
+  <meta name="color-scheme" content="light dark">
+  <title>Projects · Aakarsh Kashyap</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="latex-sketch.css">
+  <script type="module" src="vendor/wired-elements.js"></script>
+</head>
+<body>
+  <main class="paper">
+
+    <header class="masthead">
+      <h1 class="display-name" style="font-size:26px;">Projects</h1>
+      <p class="masthead-meta">Six selected works in systems programming, GPU compute, distributed systems, and agent infrastructure.</p>
+    </header>
+
+    <section id="projects">
+      <h2>Projects</h2>
+      <hr class="latex-only">
+      <wired-divider class="sketch-only" elevation="2"></wired-divider>
+
+      <section class="project" id="sauceos" data-pair>
+        <div class="latex-card card">
+          <h3>sauceOS</h3>
+          <p class="proj-meta">C, x86-64 ASM, Make, Limine — Jan 2026 – present</p>
+          <p>64-bit hobby operating system written from scratch, booting via the Limine bootloader. Implements the Global Descriptor Table, Interrupt Descriptor Table, ISR and IRQ dispatch routines, and Task State Segment in C and x86-64 assembly. Buddy memory allocator for kernel heap management in the higher-half virtual address space, handling block splitting, coalescing, and alignment constraints. Four-level paging with independent per-process virtual address space mapping. PS/2 keyboard driver with interrupt-driven input handling wired through the IDT. Minimal libc and syscall interface establishing the kernel-user boundary for future userspace programs.</p>
+          <a class="proj-link" href="https://github.com/souls-syntax/SauceOS" target="_blank" rel="noopener">[ source ]</a>
+        </div>
+        <wired-card class="sketch-card card" elevation="2">
+          <h3>sauceOS</h3>
+          <p class="proj-meta">C, x86-64 ASM, Make, Limine — Jan 2026 – present</p>
+          <p>64-bit hobby operating system written from scratch, booting via the Limine bootloader. Implements the Global Descriptor Table, Interrupt Descriptor Table, ISR and IRQ dispatch routines, and Task State Segment in C and x86-64 assembly. Buddy memory allocator for kernel heap management in the higher-half virtual address space, handling block splitting, coalescing, and alignment constraints. Four-level paging with independent per-process virtual address space mapping. PS/2 keyboard driver with interrupt-driven input handling wired through the IDT. Minimal libc and syscall interface establishing the kernel-user boundary for future userspace programs.</p>
+          <a class="proj-link" href="https://github.com/souls-syntax/SauceOS" target="_blank" rel="noopener">[ source ]</a>
+        </wired-card>
+      </section>
+
+      <section class="project" id="soft-cuda" data-pair>
+        <div class="latex-card card">
+          <h3>soft-cuda</h3>
+          <p class="proj-meta">C++, CUDA, cuBLAS, cuDNN — Mar 2026 – present</p>
+          <p>Hybrid CPU/GPU tensor execution engine featuring a bump allocator memory pool, lazy evaluation DAG, and a three-pass AOT compiler with profile-guided backend assignment between CPU and GPU operators. Double-buffered SGEMM kernel overlapping memory transfers with compute using CUDA streams — benchmarked at 0.94 ms per step against GPU-only dispatch at 1.44 ms per step, a 35-percent throughput improvement, with cuBLAS as the reference backend. Full forward and backward pass with MSE, cross-entropy loss, and SGD. Trained XOR to convergence at loss ≈ 3.5 × 10⁻¹⁴.</p>
+          <a class="proj-link" href="https://github.com/builders-lab/soft-cuda" target="_blank" rel="noopener">[ source ]</a>
+        </div>
+        <wired-card class="sketch-card card" elevation="2">
+          <h3>soft-cuda</h3>
+          <p class="proj-meta">C++, CUDA, cuBLAS, cuDNN — Mar 2026 – present</p>
+          <p>Hybrid CPU/GPU tensor execution engine featuring a bump allocator memory pool, lazy evaluation DAG, and a three-pass AOT compiler with profile-guided backend assignment between CPU and GPU operators. Double-buffered SGEMM kernel overlapping memory transfers with compute using CUDA streams — benchmarked at 0.94 ms per step against GPU-only dispatch at 1.44 ms per step, a 35-percent throughput improvement, with cuBLAS as the reference backend. Full forward and backward pass with MSE, cross-entropy loss, and SGD. Trained XOR to convergence at loss ≈ 3.5 × 10⁻¹⁴.</p>
+          <a class="proj-link" href="https://github.com/builders-lab/soft-cuda" target="_blank" rel="noopener">[ source ]</a>
+        </wired-card>
+      </section>
+
+      <section class="project" id="sush" data-pair>
+        <div class="latex-card card">
+          <h3>sush</h3>
+          <p class="proj-meta">C++, POSIX API — Feb 2026 – Mar 2026</p>
+          <p>Unix shell from scratch in C++ supporting piping chains, command history, and variable expansion without relying on any system shell utility. Uses fork, exec, pipe, and dup2 directly for process creation, file descriptor wiring, and IPC. Custom lexer and token expander for command parsing, tokenization, and variable resolution.</p>
+          <a class="proj-link" href="https://github.com/souls-syntax/sush" target="_blank" rel="noopener">[ source ]</a>
+        </div>
+        <wired-card class="sketch-card card" elevation="2">
+          <h3>sush</h3>
+          <p class="proj-meta">C++, POSIX API — Feb 2026 – Mar 2026</p>
+          <p>Unix shell from scratch in C++ supporting piping chains, command history, and variable expansion without relying on any system shell utility. Uses fork, exec, pipe, and dup2 directly for process creation, file descriptor wiring, and IPC. Custom lexer and token expander for command parsing, tokenization, and variable resolution.</p>
+          <a class="proj-link" href="https://github.com/souls-syntax/sush" target="_blank" rel="noopener">[ source ]</a>
+        </wired-card>
+      </section>
+
+      <section class="project" id="custodian" data-pair>
+        <div class="latex-card card">
+          <h3>Custodian</h3>
+          <p class="proj-meta">Go, Python, Redis, PostgreSQL, DistilBERT, Docker Compose — Dec 2025 – Jan 2026</p>
+          <p>High-concurrency Go orchestrator implementing a scatter-gather pattern on every incoming query, fanning out simultaneously to PostgreSQL for audit logging and a Python BERT service for inference, with results joined before response. Three-tier degradation chain: Redis cache under 1 ms for known claims, local DistilBERT at 50 ms for high-volume filtering, and async LLM escalation via a Redis job queue for ambiguous cases. Write-through cache consistency: background worker LLM verdicts atomically overwrite both the Redis cache and the PostgreSQL record. The LLM is kept current through a harness that provides internet access.</p>
+          <a class="proj-link" href="https://github.com/souls-syntax/Custodian" target="_blank" rel="noopener">[ source ]</a>
+        </div>
+        <wired-card class="sketch-card card" elevation="2">
+          <h3>Custodian</h3>
+          <p class="proj-meta">Go, Python, Redis, PostgreSQL, DistilBERT, Docker Compose — Dec 2025 – Jan 2026</p>
+          <p>High-concurrency Go orchestrator implementing a scatter-gather pattern on every incoming query, fanning out simultaneously to PostgreSQL for audit logging and a Python BERT service for inference, with results joined before response. Three-tier degradation chain: Redis cache under 1 ms for known claims, local DistilBERT at 50 ms for high-volume filtering, and async LLM escalation via a Redis job queue for ambiguous cases. Write-through cache consistency: background worker LLM verdicts atomically overwrite both the Redis cache and the PostgreSQL record. The LLM is kept current through a harness that provides internet access.</p>
+          <a class="proj-link" href="https://github.com/souls-syntax/Custodian" target="_blank" rel="noopener">[ source ]</a>
+        </wired-card>
+      </section>
+
+      <section class="project" id="slopgen" data-pair>
+        <div class="latex-card card">
+          <h3>SlopGen</h3>
+          <p class="proj-meta">Go, OpenAI SDK, Ollama, JSON Schema — Feb 2026 – Mar 2026</p>
+          <p>ReAct-style agentic loop in Go: the LLM reasons over tool-call results iteratively (read, write, execute) until the task is resolved, with full conversation history passed on every inference request. All tool interfaces defined via strict JSON schemas. Human-in-the-loop confirmation gate for shell execution. Model-agnostic: local Ollama (qwen2.5:7b) and remote cloud endpoints (GPT-OSS 20B hosted on Kaggle via Ngrok) switchable via a single CLI flag.</p>
+          <a class="proj-link" href="https://github.com/souls-syntax/SlopGen" target="_blank" rel="noopener">[ source ]</a>
+        </div>
+        <wired-card class="sketch-card card" elevation="2">
+          <h3>SlopGen</h3>
+          <p class="proj-meta">Go, OpenAI SDK, Ollama, JSON Schema — Feb 2026 – Mar 2026</p>
+          <p>ReAct-style agentic loop in Go: the LLM reasons over tool-call results iteratively (read, write, execute) until the task is resolved, with full conversation history passed on every inference request. All tool interfaces defined via strict JSON schemas. Human-in-the-loop confirmation gate for shell execution. Model-agnostic: local Ollama (qwen2.5:7b) and remote cloud endpoints (GPT-OSS 20B hosted on Kaggle via Ngrok) switchable via a single CLI flag.</p>
+          <a class="proj-link" href="https://github.com/souls-syntax/SlopGen" target="_blank" rel="noopener">[ source ]</a>
+        </wired-card>
+      </section>
+
+      <section class="project" id="chirpy" data-pair>
+        <div class="latex-card card">
+          <h3>Chirpy</h3>
+          <p class="proj-meta">Go, PostgreSQL, JWT, Argon2id, REST — Jan 2026 – Mar 2026</p>
+          <p>Production-style RESTful API in Go with zero external web frameworks. Covers user registration, chirp CRUD, stateless JWT authentication, refresh-token issuance and revocation, webhook ingestion, and admin observability metrics. Auth layer with short-lived JWT access tokens and revocable refresh tokens persisted in PostgreSQL. Argon2id for password hashing; shared-secret webhook verification for secure third-party event ingestion.</p>
+          <a class="proj-link" href="https://github.com/souls-syntax/Chirpy" target="_blank" rel="noopener">[ source ]</a>
+        </div>
+        <wired-card class="sketch-card card" elevation="2">
+          <h3>Chirpy</h3>
+          <p class="proj-meta">Go, PostgreSQL, JWT, Argon2id, REST — Jan 2026 – Mar 2026</p>
+          <p>Production-style RESTful API in Go with zero external web frameworks. Covers user registration, chirp CRUD, stateless JWT authentication, refresh-token issuance and revocation, webhook ingestion, and admin observability metrics. Auth layer with short-lived JWT access tokens and revocable refresh tokens persisted in PostgreSQL. Argon2id for password hashing; shared-secret webhook verification for secure third-party event ingestion.</p>
+          <a class="proj-link" href="https://github.com/souls-syntax/Chirpy" target="_blank" rel="noopener">[ source ]</a>
+        </wired-card>
+      </section>
+    </section>
+
+  </main>
+
+  <a class="latex-chip toc-chip" id="toc-chip" href="#" title="Table of Contents">\tableofcontents</a>
+  <div id="latex-toc" class="latex-toc"></div>
+  <a class="latex-chip nav-chip" id="nav-chip" href="#" title="Site Navigation">\begin{document}</a>
+  <div id="latex-nav-popup" class="latex-nav-popup">
+    <a href="index.html">\ref{about}</a>
+    <a href="projects.html">\ref{projects}</a>
+    <a href="blog.html">\ref{blog}</a>
+    <a href="resume.html">\ref{r\'{e}sum\'{e}}</a>
+  </div>
+  <a class="latex-chip top-chip" id="top-chip" href="#" title="Back to Top">\top</a>
+  <a class="latex-chip pagecolor-chip" id="pagecolor-chip" href="#" title="Toggle Dark Mode">\pagecolor{dark}</a>
+  <a class="latex-chip theme-chip" id="theme-chip" href="#" title="Toggle Presentation Mode">\end{document}</a>
+
+  <div class="latex-taskbar">
+    <div class="taskbar-left">
+      <a href="index.html">about</a> &middot;
+      <a href="projects.html">projects</a> &middot;
+      <a href="blog.html">blog</a> &middot;
+      <a href="resume.html">r&eacute;sum&eacute;</a>
+    </div>
+    <div class="taskbar-center"><i>typeset with Vim and restraint</i></div>
+    <div class="taskbar-right"><span id="latex-clock">--:--</span></div>
+  </div>
+
+  <script src="js/theme-toggle.js"></script>
+</body>
+</html>
